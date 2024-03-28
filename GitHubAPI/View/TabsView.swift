@@ -13,12 +13,12 @@ struct TabsView: View {
     
     var body: some View {
         TabView(selection: $selectedTab) {
-            ProfileView()
-                .tabItem {
-                    Image(systemName: "house.fill")
-                    Text("Inicio")
-                }
-                .tag(0)
+//            ProfileView()
+//                .tabItem {
+//                    Image(systemName: "house.fill")
+//                    Text("Inicio")
+//                }
+//                .tag(0)
             
 //            ProfileView()
 //                .tabItem {

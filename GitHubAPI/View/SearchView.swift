@@ -9,6 +9,8 @@ import SwiftUI
 
 struct SearchView: View {
     
+    // MARK: - PROPERTIES
+    
     @State private var users: [GHUser] = []
     @State private var searchTerm: String = ""
     
@@ -17,35 +19,15 @@ struct SearchView: View {
         return users.filter { $0.login.localizedCaseInsensitiveContains(searchTerm) }
     }
     
+    // MARK: - BODY
+    
     var body: some View {
         NavigationStack {
             List {
                 if filteredUsers.isEmpty {
-                    ContentUnavailableView.search(text: searchTerm)
+                    //ContentUnavailableView.search(text: searchTerm)
                 } else {
-                    LazyVStack(alignment: .leading) {
-                        ForEach(filteredUsers, id: \.self) { user in
-                            HStack {
-                                AsyncImage(
-                                    url: URL(string: user.avatarUrl)) { image in
-                                        image
-                                            .resizable()
-                                            .scaledToFit()
-                                            .clipShape(Circle())
-                                    } placeholder: {
-                                        Circle()
-                                            .foregroundStyle(.secondary)
-                                    }
-                                    .frame(width: 50, height: 50)
-                                
-                                Text(user.login)
-                                    .font(.headline)
-                                Spacer()
-                            }
-                            .frame(maxWidth: .infinity)
-                            Divider()
-                        }
-                    }
+                    usersList
                 }
             }
             .navigationTitle("Search")
@@ -68,6 +50,38 @@ struct SearchView: View {
     }
 }
  
+// MARK: - COMPONENTS
+
+extension SearchView {
+    
+    private var usersList: some View {
+        ForEach(filteredUsers, id: \.self) { user in
+            NavigationLink(destination: ProfileView(user: user)) {
+                HStack {
+                    AsyncImage(
+                        url: URL(string: user.avatarUrl)) { image in
+                            image
+                                .resizable()
+                                .scaledToFit()
+                                .clipShape(Circle())
+                        } placeholder: {
+                            Circle()
+                                .foregroundStyle(.secondary)
+                        }
+                        .frame(width: 50, height: 50)
+                    
+                    Text(user.login)
+                        .font(.headline)
+                    Spacer()
+                }
+                .frame(maxWidth: .infinity)
+            }
+        }
+    }
+    
+}
+
+
 #Preview {
     SearchView()
 }

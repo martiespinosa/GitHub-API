@@ -9,13 +9,13 @@ import SwiftUI
 
 struct ProfileView: View {
     
-    @State private var user: GHUser?
+    var user: GHUser
     
     var body: some View {
         NavigationStack {
             VStack(alignment: .center) {
                 AsyncImage(
-                    url: URL(string: user?.avatarUrl ?? "")) { image in
+                    url: URL(string: user.avatarUrl)) { image in
                         image
                             .resizable()
                             .scaledToFit()
@@ -31,13 +31,13 @@ struct ProfileView: View {
                             .padding(.bottom, 10)
                     }
 
-                Text(user?.name ?? "")
+                Text(user.name ?? "")
                     .font(.title)
                 
-                Text("@\(user?.login ?? "")")
+                Text("@\(user.login)")
                     .font(.title3)
                 
-                Text(user?.bio ?? "")
+                Text(user.bio ?? "")
                     .foregroundStyle(.secondary)
                     .padding(.top, 20)
                 Spacer()
@@ -45,22 +45,22 @@ struct ProfileView: View {
             .padding()
             .navigationTitle("Profile")
         }
-        .task {
-            do {
-                user = try await getUser()
-            } catch GHError.invalidURL {
-                print("Error: Invalid URL.")
-            } catch GHError.invalidResponse {
-                print("Error: Invalid Response.")
-            } catch GHError.invalidData {
-                print("Error: Invalid Data.")
-            } catch {
-                print("Unknown Error.")
-            }
-        }
+//        .task {
+//            do {
+//                user = try await getUser()
+//            } catch GHError.invalidURL {
+//                print("Error: Invalid URL.")
+//            } catch GHError.invalidResponse {
+//                print("Error: Invalid Response.")
+//            } catch GHError.invalidData {
+//                print("Error: Invalid Data.")
+//            } catch {
+//                print("Unknown Error.")
+//            }
+//        }
     }
 }
 
-#Preview {
-    ProfileView()
-}
+//#Preview {
+//    ProfileView()
+//}
