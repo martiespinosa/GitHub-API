@@ -64,8 +64,8 @@ func get100Users() async throws -> [GHUser] {
 //        }
 //        
 //        var request = URLRequest(url: url)
-//        request.addValue("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", forHTTPHeaderField: "Authorization")
-//        
+//        request.addValue("PUT_MY_TOKEN", forHTTPHeaderField: "Authorization")
+//
 //        let (data, response) = try await URLSession.shared.data(for: request)
 //        print(response)
 //        
