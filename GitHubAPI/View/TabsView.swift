@@ -13,19 +13,19 @@ struct TabsView: View {
     
     var body: some View {
         TabView(selection: $selectedTab) {
-//            ProfileView()
-//                .tabItem {
-//                    Image(systemName: "house.fill")
-//                    Text("Inicio")
-//                }
-//                .tag(0)
+            ProfileView(user: GHUser(login: "martiespinosa", name: "Marti", avatarUrl: "", bio: "", publicRepos: 0, followers: 0, following: 0))
+                .tabItem {
+                    Image(systemName: "house.fill")
+                    Text("Inicio")
+                }
+                .tag(0)
             
-//            ProfileView()
-//                .tabItem {
-//                    Image(systemName: "square.grid.2x2.fill")
-//                    Text("Explorar")
-//                }
-//                .tag(1)
+            ProfileView(user: GHUser(login: "martiespinosa", name: "Marti", avatarUrl: "", bio: "", publicRepos: 0, followers: 0, following: 0))
+                .tabItem {
+                    Image(systemName: "square.grid.2x2.fill")
+                    Text("Explorar")
+                }
+                .tag(1)
             
             SearchView()
                 .tabItem {

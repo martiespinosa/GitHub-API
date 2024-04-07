@@ -25,7 +25,7 @@ struct SearchView: View {
         NavigationStack {
             List {
                 if filteredUsers.isEmpty {
-                    //ContentUnavailableView.search(text: searchTerm)
+                    ContentUnavailableView.search(text: searchTerm)
                 } else {
                     usersList
                 }
