@@ -7,8 +7,8 @@
 
 import Foundation
 
-func getUser() async throws -> GHUser {
-    let endpoint = "https://api.github.com/users/midudev"
+func getUser(login: String) async throws -> GHUser {
+    let endpoint = "https://api.github.com/users/\(login)"
     
     guard let url = URL(string: endpoint) else {
         throw GHError.invalidURL
@@ -37,7 +37,6 @@ func get100Users() async throws -> [GHUser] {
     }
     
     let (data, response) = try await URLSession.shared.data(from: url)
-    print(response)
     
     guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
         throw GHError.invalidResponse

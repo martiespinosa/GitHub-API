@@ -12,4 +12,7 @@ struct GHUser: Codable, Hashable {
     let name: String?
     let avatarUrl: String
     let bio: String?
+    let publicRepos: Int?
+    let followers: Int?
+    let following: Int?
 }
