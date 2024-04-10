@@ -9,12 +9,16 @@ import SwiftUI
 
 struct ProfileView: View {
     
+    // MARK: - PROPERTIES
+    
     @State var user: GHUser
     @State private var pickerSelection: Int = 1
     
     @State private var reposList: [Repo] = []
     @State private var followersList: [GHUser] = []
     @State private var followingList: [GHUser] = []
+    
+    // MARK: - BODY
     
     var body: some View {
         NavigationStack {
@@ -99,6 +103,8 @@ struct ProfileView: View {
         }
     }
     
+    // MARK: - FUNCTIONS
+    
     func truncateNumberIfNeeded(number: Int) -> String {
         if number >= 10000 && number < 1000000 {
             return String(number / 1000) + "k"
@@ -109,6 +115,8 @@ struct ProfileView: View {
         }
     }
 }
+
+// MARK: - COMPONENTS
 
 extension ProfileView {
     

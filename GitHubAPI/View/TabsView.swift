@@ -9,32 +9,43 @@ import SwiftUI
 
 struct TabsView: View {
     
+    // MARK: - PROPERTIES
+    
     @State var selectedTab: Int = 0
+    
+    // MARK: BODY
     
     var body: some View {
         TabView(selection: $selectedTab) {
-            ProfileView(user: GHUser(login: "martiespinosa", name: "Marti", avatarUrl: "", bio: "", publicRepos: 0, followers: 0, following: 0))
-                .tabItem {
-                    Image(systemName: "house.fill")
-                    Text("Inicio")
-                }
-                .tag(0)
+            profileView
             
-            ProfileView(user: GHUser(login: "martiespinosa", name: "Marti", avatarUrl: "", bio: "", publicRepos: 0, followers: 0, following: 0))
-                .tabItem {
-                    Image(systemName: "square.grid.2x2.fill")
-                    Text("Explorar")
-                }
-                .tag(1)
-            
-            SearchView()
-                .tabItem {
-                    Image(systemName: "magnifyingglass")
-                    Text("Buscar")
-                }
-                .tag(2)
+            searchView
         }
     }
+}
+
+// MARK: - COMPONENTS
+
+extension TabsView {
+    
+    var profileView: some View {
+        ProfileView(user: GHUser(login: "martiespinosa", name: "Marti", avatarUrl: "", bio: "", publicRepos: 0, followers: 0, following: 0))
+            .tabItem {
+                Image(systemName: "person.fill")
+                Text("Profile")
+            }
+            .tag(0)
+    }
+    
+    var searchView: some View {
+        SearchView()
+            .tabItem {
+                Image(systemName: "magnifyingglass")
+                Text("Search")
+            }
+            .tag(1)
+    }
+    
 }
 
 #Preview {
