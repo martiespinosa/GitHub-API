@@ -24,51 +24,10 @@ struct ProfileView: View {
         NavigationStack {
             //ScrollView {
                 VStack(alignment: .leading, spacing: 25) {
-                    HStack {
-                        AsyncImage(
-                            url: URL(string: user.avatarUrl)) { image in
-                                image
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 80, height: 80)
-                                    .clipShape(Circle())
-                                    .shadow(radius: 10)
-                            } placeholder: {
-                                Circle()
-                                    .frame(width: 80, height: 80)
-                                    .foregroundStyle(.gray)
-                                    .shadow(radius: 10)
-                            }
-
-                        VStack(alignment: .leading) {
-                            Text(user.name ?? "")
-                                .font(.title2)
-                                .bold()
-                            
-                            Text("@\(user.login)")
-                                .font(.title3)
-                                .foregroundStyle(.secondary)
-                        }
-                        Spacer()
-                    }
+                    userMainInfo
+                    userBio
                     
-                    Text(user.bio ?? "")
-                        .foregroundStyle(.secondary)
-                    
-                    Picker(
-                        selection: $pickerSelection,
-                        label: Text("Segmented picker"),
-                        content: {
-                            Text("\(truncateNumberIfNeeded(number: user.publicRepos ?? 0)) Repos")
-                                .tag(1)
-                            Text("\(truncateNumberIfNeeded(number: user.followers ?? 0)) Followers")
-                                .tag(2)
-                            Text("\(truncateNumberIfNeeded(number: user.following ?? 0)) Following")
-                                .tag(3)
-                        }
-                    )
-                    .pickerStyle(SegmentedPickerStyle())
-                    
+                    segmentedPicker
                     switch pickerSelection {
                     case 1:
                         repos
@@ -88,19 +47,19 @@ struct ProfileView: View {
                 .navigationTitle("Profile")
             //}
             }
-        .task {
-            do {
-                user = try await getUser(login: user.login)
-            } catch GHError.invalidURL {
-                print("Error: Invalid URL.")
-            } catch GHError.invalidResponse {
-                print("Error: Invalid Response.")
-            } catch GHError.invalidData {
-                print("Error: Invalid Data.")
-            } catch {
-                print("Unknown Error.")
+            .task {
+                do {
+                    user = try await getUser(login: user.login)
+                } catch GHError.invalidURL {
+                    print("Error: Invalid URL.")
+                } catch GHError.invalidResponse {
+                    print("Error: Invalid Response.")
+                } catch GHError.invalidData {
+                    print("Error: Invalid Data.")
+                } catch {
+                    print("Unknown Error.")
+                }
             }
-        }
     }
     
     // MARK: - FUNCTIONS
@@ -120,7 +79,58 @@ struct ProfileView: View {
 
 extension ProfileView {
     
-    var repos: some View {
+    private var userMainInfo: some View {
+        HStack {
+            AsyncImage(
+                url: URL(string: user.avatarUrl)) { image in
+                    image
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 80, height: 80)
+                        .clipShape(Circle())
+                        .shadow(radius: 10)
+                } placeholder: {
+                    Circle()
+                        .frame(width: 80, height: 80)
+                        .foregroundStyle(.gray)
+                        .shadow(radius: 10)
+                }
+
+            VStack(alignment: .leading) {
+                Text(user.name ?? "")
+                    .font(.title2)
+                    .bold()
+                
+                Text("@\(user.login)")
+                    .font(.title3)
+                    .foregroundStyle(.secondary)
+            }
+            Spacer()
+        }
+    }
+    
+    private var userBio: some View {
+        Text(user.bio ?? "")
+            .foregroundStyle(.secondary)
+    }
+    
+    private var segmentedPicker: some View {
+        Picker(
+            selection: $pickerSelection,
+            label: Text("Segmented picker"),
+            content: {
+                Text("\(truncateNumberIfNeeded(number: user.publicRepos ?? 0)) Repos")
+                    .tag(1)
+                Text("\(truncateNumberIfNeeded(number: user.followers ?? 0)) Followers")
+                    .tag(2)
+                Text("\(truncateNumberIfNeeded(number: user.following ?? 0)) Following")
+                    .tag(3)
+            }
+        )
+        .pickerStyle(SegmentedPickerStyle())
+    }
+    
+    private var repos: some View {
         List {
 //            if reposList.isEmpty {
 //                Text("Loading...")
@@ -154,7 +164,7 @@ extension ProfileView {
         }
     }
     
-    var followers: some View {
+    private var followers: some View {
         List {
             ForEach(followersList, id: \.self) { follower in
                 NavigationLink(destination: ProfileView(user: follower)) {
@@ -190,7 +200,7 @@ extension ProfileView {
         }
     }
     
-    var following: some View {
+    private var following: some View {
         List {
             ForEach(followingList, id: \.self) { follower in
                 NavigationLink(destination: ProfileView(user: follower)) {
