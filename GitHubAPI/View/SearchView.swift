@@ -11,11 +11,14 @@ struct SearchView: View {
     
     // MARK: - PROPERTIES
     
+//    @ObservedObject private var vm: GHViewModel
+    @StateObject private var vm = GHViewModel()
+    
     @State private var users: [GHUser] = []
     @State private var searchTerm: String = ""
     
     var filteredUsers: [GHUser] {
-        guard !searchTerm.isEmpty else { return users }
+        //guard !searchTerm.isEmpty else { return users }
         return users.filter { $0.login.localizedCaseInsensitiveContains(searchTerm) }
     }
     
@@ -24,7 +27,7 @@ struct SearchView: View {
     var body: some View {
         NavigationStack {
             List {
-                if filteredUsers.isEmpty {
+                if filteredUsers.isEmpty && !searchTerm.isEmpty {
                     ContentUnavailableView.search(text: searchTerm)
                 } else {
                     usersList
@@ -35,7 +38,7 @@ struct SearchView: View {
             .autocorrectionDisabled()
             .task {
                 do {
-                    users = try await get100Users()
+                    users = try await vm.get100Users()
                 } catch GHError.invalidURL {
                     print("Error: Invalid URL.")
                 } catch GHError.invalidResponse {

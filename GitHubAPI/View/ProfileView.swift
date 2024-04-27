@@ -11,6 +11,8 @@ struct ProfileView: View {
     
     // MARK: - PROPERTIES
     
+    @StateObject var vm = GHViewModel()
+    
     @State var user: GHUser
     
     @State private var reposList: [Repo] = []
@@ -44,7 +46,7 @@ struct ProfileView: View {
         }
         .task {
             do {
-                user = try await getUser(login: user.login)
+                user = try await vm.getUser(login: user.login)
             } catch GHError.invalidURL {
                 print("Error: Invalid URL.")
             } catch GHError.invalidResponse {
@@ -157,7 +159,19 @@ extension ProfileView {
                                     .font(.title3)
                                     .fontWeight(.semibold)
                                 Spacer()
-                                Text("Public")
+                                AsyncImage(
+                                    url: URL(string: user.avatarUrl)) { image in
+                                        image
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(width: 30, height: 30)
+                                            .clipShape(Circle())
+                                            .padding(.horizontal, -5)
+                                    } placeholder: {
+                                        Circle()
+                                            .frame(width: 30, height: 30)
+                                            .padding(.horizontal, -5)
+                                    }
                             }
                             
                             Text(repo.description ?? "")
@@ -177,18 +191,18 @@ extension ProfileView {
                     }
                     .padding()
                     .frame(maxWidth: .infinity)
-                    .background(.primary.opacity(0.1))
-                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                    .background(.regularMaterial)
+                    .clipShape(RoundedRectangle(cornerRadius: 25))
                     .overlay(
-                        RoundedRectangle(cornerRadius: 10)
-                            .stroke(.secondary, lineWidth: 2.5)
+                        RoundedRectangle(cornerRadius: 25)
+                            .stroke(.secondary, lineWidth: 2)
                     )
                 }
                 .buttonStyle(PlainButtonStyle())
             }
         }
         .onAppear {
-            getRepos(for: user.login, page: 1) { repos, errorMessage in
+            vm.getRepos(for: user.login, page: 1) { repos, errorMessage in
                 guard let repos = repos else {
                     print("Error:", errorMessage ?? "Unknown error")
                     return
@@ -231,7 +245,7 @@ extension ProfileView {
         .searchable(text: $searchTerm, prompt: "Search User")
         .autocorrectionDisabled()
         .onAppear {
-            getFollowers(for: user.login, page: 1) { followers, errorMessage in
+            vm.getFollowers(for: user.login, page: 1) { followers, errorMessage in
                 guard let followers = followers else {
                     print("Error:", errorMessage ?? "Unknown error")
                     return
@@ -274,7 +288,7 @@ extension ProfileView {
         .searchable(text: $searchTerm, prompt: "Search User")
         .autocorrectionDisabled()
         .onAppear {
-            getFollowing(for: user.login, page: 1) { followers, errorMessage in
+            vm.getFollowing(for: user.login, page: 1) { followers, errorMessage in
                 guard let followers = followers else {
                     print("Error:", errorMessage ?? "Unknown error")
                     return
