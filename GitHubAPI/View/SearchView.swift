@@ -16,9 +16,9 @@ struct SearchView: View {
     
     @State private var users: [GHUser] = []
     @State private var searchTerm: String = ""
+    @State private var isLoading: Bool = true
     
     var filteredUsers: [GHUser] {
-        //guard !searchTerm.isEmpty else { return users }
         return users.filter { $0.login.localizedCaseInsensitiveContains(searchTerm) }
     }
     
@@ -33,20 +33,26 @@ struct SearchView: View {
                     usersList
                 }
             }
+            .redacted(reason: isLoading ? .placeholder : [])
             .navigationTitle("Search")
             .searchable(text: $searchTerm, prompt: "Search Users")
             .autocorrectionDisabled()
             .task {
                 do {
                     users = try await vm.get100Users()
+                    isLoading = false
                 } catch GHError.invalidURL {
                     print("Error: Invalid URL.")
+                    isLoading = false
                 } catch GHError.invalidResponse {
                     print("Error: Invalid Response.")
+                    isLoading = false
                 } catch GHError.invalidData {
                     print("Error: Invalid Data.")
+                    isLoading = false
                 } catch {
                     print("Unknown Error.")
+                    isLoading = false
                 }
             }
         }

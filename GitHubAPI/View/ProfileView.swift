@@ -14,6 +14,7 @@ struct ProfileView: View {
     @StateObject var vm = GHViewModel()
     
     @State var user: GHUser
+    @State private var isLoading: Bool = true
     
     @State private var reposList: [Repo] = []
     @State private var followersList: [GHUser] = []
@@ -42,19 +43,25 @@ struct ProfileView: View {
                 }
                 .padding(16)
                 .navigationTitle("Profile")
+                .redacted(reason: isLoading ? .placeholder : [])
             }
         }
         .task {
             do {
                 user = try await vm.getUser(login: user.login)
+                isLoading = false
             } catch GHError.invalidURL {
                 print("Error: Invalid URL.")
+                isLoading = false
             } catch GHError.invalidResponse {
                 print("Error: Invalid Response.")
+                isLoading = false
             } catch GHError.invalidData {
                 print("Error: Invalid Data.")
+                isLoading = false
             } catch {
                 print("Unknown Error.")
+                isLoading = false
             }
         }
     }
